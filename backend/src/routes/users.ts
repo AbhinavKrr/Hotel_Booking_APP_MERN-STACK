@@ -1,10 +1,25 @@
 import express, {Request, Response} from 'express';
 import User from '../models/user'
 import jwt from 'jsonwebtoken';
+import { check, validationResult } from "express-validator";
 
 const router = express.Router();
 
-router.post('/register', async (req: Request, res: Response): Promise<any> => {
+
+router.post('/register', [
+    check("firstName", "First Name is required").isString(),
+    check("lastName", "Last Name is required").isString(),
+    check("email", "Email is required").isEmail(),
+    check("password", "Password with 6 or more characters required").isLength({min: 6}),
+],
+async (req: Request, res: Response): Promise<any> => {
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({message: errors.array()});
+    }
+
     try{
         let user = await User.findOne({email: req.body.email});
         if(user){
@@ -21,7 +36,7 @@ router.post('/register', async (req: Request, res: Response): Promise<any> => {
     }
     catch(err){
         console.log(err);
-        res.status(500).send({msg: "something went wrong"});
+        res.status(500).send({message: "something went wrong"});
     }
 
 })
