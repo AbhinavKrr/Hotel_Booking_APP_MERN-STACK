@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import userRouter from './routes/users'
+import authRouter from './routes/auth'
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
 
@@ -13,7 +14,7 @@ app.use(express.urlencoded({extended: true}));
 //cors server middleware //because of diffrent port on server or intirely differnt server
 app.use(cors());
 
-
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
 
