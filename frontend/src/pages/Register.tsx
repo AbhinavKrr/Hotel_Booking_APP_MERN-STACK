@@ -18,7 +18,7 @@ const Register = () =>{
 
     const navigate = useNavigate();
 
-    const { showToast } = useAppContext();
+    const { showToast, refetch } = useAppContext();
 
     const { register, watch, handleSubmit, formState: { errors } } = useForm<RegisterFormData>();
 
@@ -26,6 +26,7 @@ const Register = () =>{
         mutationFn: apiClient.register,
         onSuccess: () =>{
             showToast({message: "Registration Success", type: "SUCCESS"});
+            refetch();
             navigate("/");
         },
         onError: (error: Error) =>{

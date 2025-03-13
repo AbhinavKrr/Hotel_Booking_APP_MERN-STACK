@@ -11,7 +11,7 @@ type ToastMessage = {
 type AppContext = {
     showToast: (toastMessage: ToastMessage) => void;
     isLoggedIn: boolean;
-
+    refetch: () => void;
 }
 
 const AppContext = React.createContext<AppContext | undefined>(undefined);
@@ -20,14 +20,16 @@ export const AppContextProvider = ({children}: {children: React.ReactNode}) => {
 
     const [toast, setToast] = useState<ToastMessage | undefined>(undefined);
 
-    const { isError } = useQuery({ queryKey: ["validateToken"], queryFn: apiClient.validateToken, retry: false });
+    const { isError, refetch } = useQuery({ queryKey: ["validateToken"], queryFn: apiClient.validateToken, retry: false });
 
     return (
         <AppContext.Provider value={{
             showToast: (toastMessage)=> {
                 setToast(toastMessage);
             },
-            isLoggedIn: !isError
+            isLoggedIn: !isError, 
+            refetch: refetch
+            
         }}>
             {toast && (<Toast message={toast.message} type={toast.type} onClose={()=>setToast(undefined)}/>)}
             {children}
