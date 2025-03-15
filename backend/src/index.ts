@@ -6,7 +6,9 @@ import userRouter from './routes/users'
 import authRouter from './routes/auth'
 import cookieParser from 'cookie-parser';
 
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string).then(()=>{
+    console.log("Connected!");
+})
 
 const app = express();
 app.use(cookieParser());
