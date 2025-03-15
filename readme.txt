@@ -19,11 +19,7 @@ then use nodemon -> npm run dev ->
 
 
 
-  video Timing: 1:56:16
-
-  video Timing: 2:35:11
-
-  video Timing: 3:37:19
+  
 
 
 
