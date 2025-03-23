@@ -17,8 +17,8 @@ export type HotelType = {
 
 }
 
-export type HotelSerchResponse = {
-    data: Array<HotelType>;
+export type HotelSearchResponse = {
+    data: HotelType[];
     pagination: {
         total: number,
         page: number,
