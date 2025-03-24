@@ -1,11 +1,14 @@
 import express, {query, Request, Response} from 'express';
 import Hotel from '../models/hotel.js';
 import { HotelSearchResponse } from '../shared/types.js';
+import { param, validationResult } from 'express-validator';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
 // api/hotels/serach
 router.get('/search', async (req: Request, res: Response)=>{
+
     try {
 
         const query = constructSearchQuery(req.query);
@@ -46,6 +49,33 @@ router.get('/search', async (req: Request, res: Response)=>{
         res.status(500).json({message: "Something went wrong"});
     }
 });
+
+router.get("/:id", [
+    param("id").notEmpty().withMessage("Hotel Id is required"),
+
+], async (req: Request, res: Response): Promise<any>  => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id = req.params.id.toString();
+    try {
+        const hotel = await Hotel.findById(id);
+
+        if (!hotel) {
+            return res.status(404).json({ message: "Hotel not found" });
+        }
+
+        res.json(hotel);
+    } catch (error) {
+        console.error("Error fetching hotel details:", error);
+        res.status(500).json({ message: "Error fetching hotel" });
+    }
+});
+
 
 const constructSearchQuery = (queryParams: any) => {
 

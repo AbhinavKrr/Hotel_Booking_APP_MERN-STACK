@@ -22,7 +22,7 @@ const SearchResultsCard = ({hotel}: Props) =>{
                         </span>
                         <span className="ml-1 text-sm">{hotel.type}</span>
                     </div>
-                    <Link className="text-2xl font-bold cursor-pointer" to={`/details/${hotel._id}`}>{hotel.name}</Link>
+                    <Link className="text-2xl font-bold cursor-pointer" to={`/detail/${hotel._id}`}>{hotel.name}</Link>
                 </div>
                 <div>
                     <div className="line-clamp-4">
@@ -38,7 +38,7 @@ const SearchResultsCard = ({hotel}: Props) =>{
                         </div>
                         <div className="flex flex-col items-end gap-1">
                             <span className="font-bold">${hotel.pricePerNight} per night</span>
-                            <Link to={`/details/${hotel._id}`} className="bg-blue-600 text-white h-full p-2 font-bold text-xl max-w-fit hover:bg-blue-500">View More</Link>
+                            <Link to={`/detail/${hotel._id}`} className="bg-blue-600 text-white h-full p-2 font-bold text-xl max-w-fit hover:bg-blue-500">View More</Link>
                         </div>
                 </div>
             </div>
