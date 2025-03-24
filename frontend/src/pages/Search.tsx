@@ -17,6 +17,7 @@ const Search = () => {
     const [selectedHotelTypes, setSelectedHotelTypes] = useState<string[]>([]);
     const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
     const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
+    const [sortOption, setSortOption] = useState<string>("");
 
 
     const searchParams = {
@@ -29,10 +30,11 @@ const Search = () => {
         stars: selectedStars,
         types: selectedHotelTypes,
         facilities: selectedFacilities,
-        maxPrice: selectedPrice?.toString()
+        maxPrice: selectedPrice?.toString(),
+        sortOption
     }
 
-    const queryKey = ["searchHotels", search.destination, search.checkIn, search.checkOut, search.adultCount, search.childCount, page.toString(), selectedStars, selectedHotelTypes, selectedFacilities, selectedPrice?.toString()];
+    const queryKey = ["searchHotels", search.destination, search.checkIn, search.checkOut, search.adultCount, search.childCount, page.toString(), selectedStars, selectedHotelTypes, selectedFacilities, selectedPrice?.toString(), sortOption];
 
 
     const { data: hotelData } = useQuery({
@@ -76,7 +78,12 @@ const Search = () => {
                         {hotelData?.pagination.total} Hotels found
                         {search.destination? ` in ${search.destination}` : ""}
                     </span>
-                    {/* Todo Sort Options */}
+                    <select value={sortOption} onChange={(event) => setSortOption(event.target.value)} className="p-2 border rounded-md">
+                        <option value="">Sort By</option>
+                        <option value="starRating">Star Rating</option>
+                        <option value="pricePerNightAsc">Price Per Night (low to high)</option>
+                        <option value="pricePerNightDesc">Price Per Night (high to low)</option>
+                    </select>
                 </div>
                 {hotelData?.data.map((hotel)=>(
                     <SearchResultsCard hotel={hotel} key={hotel._id}/>
