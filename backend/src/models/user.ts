@@ -1,14 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { UserType } from '../shared/types.js'
 
 // this will help in the frontend to have all the correct fileds also helps in model methods generic type
-export type UserType = {
-    _id: string;
-    email: string;
-    password: string;
-    firstname: string;
-    lastName: string
-};
 
 const userScema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },

@@ -50,7 +50,7 @@ const GuestInfoForm = ({hotelId, pricePerNight}: Props) => {
    return (
 
     <div className="flex flex-col p-4 bg-blue-200 gap-4">
-        <h3 className="text-md font-bold">${pricePerNight}</h3>
+        <h3 className="text-md font-bold">${pricePerNight} per night</h3>
         <form onSubmit={isLoggedIn ? handleSubmit(onSubmit) : handleSubmit(onSignInClick)}>
             <div className="grid grid-cols-1 gap-4 items-center">
                 <div>
