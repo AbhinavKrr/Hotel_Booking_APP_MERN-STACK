@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 
 const router = express.Router();
 
-// api/hotels/serach
+// api/hotels/search
 router.get('/search', async (req: Request, res: Response)=>{
 
     try {
@@ -53,6 +53,16 @@ router.get('/search', async (req: Request, res: Response)=>{
         res.status(500).json({message: "Something went wrong"});
     }
 });
+
+router.get("/", async (req: Request, res: Response) =>{
+    try {
+        const hotels = await Hotel.find().sort("-lastUpdated");
+        res.json(hotels);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error fetching hotels"});
+    }
+})
 
 router.get("/:id", [
     param("id").notEmpty().withMessage("Hotel Id is required"),
@@ -163,6 +173,8 @@ router.post("/:hotelId/bookings", verifyToken, async (req: Request, res: Respons
         res.status(500).json({message: "something went wrong"});
     }
 })
+
+
 
 
 const constructSearchQuery = (queryParams: any) => {
