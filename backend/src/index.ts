@@ -6,6 +6,7 @@ import userRouter from './routes/users.js'
 import authRouter from './routes/auth.js'
 import hotelsRouter from './routes/my-hotels.js'
 import searchHotelRouter from './routes/hotels.js'
+import bookingsRouter from './routes/my-bookings.js'
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -42,6 +43,7 @@ app.use('/api/users', userRouter);
 app.use('/api/my-hotels', hotelsRouter);
 
 app.use('/api/hotels', searchHotelRouter);
+app.use('/api/my-bookings', bookingsRouter);
 
 
 // For any unknown routes and condinital routes like add-hotel as it is a protected route and is handled by router-dom
