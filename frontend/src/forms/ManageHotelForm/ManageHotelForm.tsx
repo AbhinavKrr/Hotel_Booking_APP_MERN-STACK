@@ -19,31 +19,27 @@ export type HotelFormData = {
     imageFiles: FileList;
     imageUrls: string[];
     adultCount: number;
-    childCount: number
-}
+    childCount: number;
+};
 
 type Props = {
-    hotel?: HotelType
+    hotel?: HotelType;
     onSave: (hotelFormData: FormData) => void;
-    isLoading: boolean
-}
+    isLoading: boolean;
+};
 
-const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
-
+const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
     const formMethods = useForm<HotelFormData>();
-
     const { handleSubmit, reset } = formMethods;
 
-    useEffect(()=>{
+    useEffect(() => {
         reset(hotel);
-    }, [hotel, reset])
+    }, [hotel, reset]);
 
     const onSubmit = handleSubmit((formDataJson: HotelFormData) => {
-        // console.log(formDataJson);
-
         const formData = new FormData();
 
-        if(hotel){
+        if (hotel) {
             formData.append("hotelId", hotel._id);
         }
 
@@ -57,39 +53,47 @@ const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
         formData.append("adultCount", formDataJson.adultCount.toString());
         formData.append("childCount", formDataJson.childCount.toString());
 
-        formDataJson.facilities.forEach((facility, index)=>{
+        formDataJson.facilities.forEach((facility, index) => {
             formData.append(`facilities[${index}]`, facility);
-        })
+        });
 
-        if(formDataJson.imageUrls){
-            formDataJson.imageUrls.forEach((url, index)=>{
+        if (formDataJson.imageUrls) {
+            formDataJson.imageUrls.forEach((url, index) => {
                 formData.append(`imageUrls[${index}]`, url);
-            })
+            });
         }
 
-        Array.from(formDataJson.imageFiles).forEach((imageFile)=>{
+        Array.from(formDataJson.imageFiles).forEach((imageFile) => {
             formData.append(`imageFiles`, imageFile);
         });
 
         onSave(formData);
+    });
 
-    }) 
-
-    return(
+    return (
         <FormProvider {...formMethods}>
-             <form className="flex flex-col gap-10" onSubmit={onSubmit}>
-                <DetailsSection/>
-                <TypeSection/>
-                <FacilitiesSection/>
-                <GuestsSection/>
-                <ImagesSection/>
+            <form 
+                className="flex flex-col gap-6 max-w-lg mx-auto p-4 md:p-6 bg-white shadow-lg rounded-lg"
+                onSubmit={onSubmit}
+            >
+                <DetailsSection />
+                <TypeSection />
+                <FacilitiesSection />
+                <GuestsSection />
+                <ImagesSection />
+                
                 <span className="flex justify-end">
-                    <button disabled={isLoading} type="submit" className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl disabled:bg-gray-500">{isLoading?"Saving...":"Save"}</button>
+                    <button 
+                        disabled={isLoading} 
+                        type="submit" 
+                        className="w-full sm:w-auto bg-blue-600 text-white px-4 py-3 text-lg font-bold rounded-lg hover:bg-blue-500 transition disabled:bg-gray-400"
+                    >
+                        {isLoading ? "Saving..." : "Save"}
+                    </button>
                 </span>
-             </form>
+            </form>
         </FormProvider>
-       
-    )
-}
+    );
+};
 
 export default ManageHotelForm;

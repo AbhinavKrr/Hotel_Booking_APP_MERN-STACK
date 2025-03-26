@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSearchContext } from "../contexts/SearchContext"
-import * as apiClient from "../api-client"
+import { useSearchContext } from "../contexts/SearchContext";
+import * as apiClient from "../api-client";
 import { useState } from "react";
 import SearchResultsCard from "../components/SearchResultCard";
 import Pagination from "../components/Pagination";
@@ -8,7 +8,6 @@ import StarRatingFilter from "../components/StarRatingFilter";
 import HotelTypesFilter from "../components/HotelTypesFilter";
 import FacilitiesFilter from "../components/FacilitiesFilter";
 import PriceFilter from "../components/PriceFilter";
-
 
 const Search = () => {
     const search = useSearchContext();
@@ -18,7 +17,6 @@ const Search = () => {
     const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
     const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
     const [sortOption, setSortOption] = useState<string>("");
-
 
     const searchParams = {
         destination: search.destination,
@@ -32,70 +30,93 @@ const Search = () => {
         facilities: selectedFacilities,
         maxPrice: selectedPrice?.toString(),
         sortOption
-    }
+    };
 
-    const queryKey = ["searchHotels", search.destination, search.checkIn, search.checkOut, search.adultCount, search.childCount, page.toString(), selectedStars, selectedHotelTypes, selectedFacilities, selectedPrice?.toString(), sortOption];
-
+    const queryKey = [
+        "searchHotels",
+        search.destination,
+        search.checkIn,
+        search.checkOut,
+        search.adultCount,
+        search.childCount,
+        page.toString(),
+        selectedStars,
+        selectedHotelTypes,
+        selectedFacilities,
+        selectedPrice?.toString(),
+        sortOption
+    ];
 
     const { data: hotelData } = useQuery({
         queryKey: queryKey,
         queryFn: () => apiClient.searchHotels(searchParams),
     });
 
-    const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const starRating = event.target.value;
+        setSelectedStars(prevStars =>
+            event.target.checked ? [...prevStars, starRating] : prevStars.filter(star => star !== starRating)
+        );
+    };
 
-        setSelectedStars( (prevStars)=> event.target.checked ? [...prevStars, starRating]: prevStars.filter((star)=> star !== starRating))
-    }
-
-    const handleHotelTypeChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    const handleHotelTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const hotelType = event.target.value;
+        setSelectedHotelTypes(prevHotelTypes =>
+            event.target.checked ? [...prevHotelTypes, hotelType] : prevHotelTypes.filter(type => type !== hotelType)
+        );
+    };
 
-        setSelectedHotelTypes( (prevHotelTypes)=> event.target.checked ? [...prevHotelTypes, hotelType]: prevHotelTypes.filter((hotelselectedType)=> hotelselectedType !== hotelType));
-    }
-
-    const handleFacilitiesChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
-        const faciltiy = event.target.value;
-
-        setSelectedFacilities( (prevFacilities)=> event.target.checked ? [...prevFacilities, faciltiy]: prevFacilities.filter((faciltiySelected)=> faciltiySelected !== faciltiy));
-    }
-
+    const handleFacilitiesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const facility = event.target.value;
+        setSelectedFacilities(prevFacilities =>
+            event.target.checked ? [...prevFacilities, facility] : prevFacilities.filter(fac => fac !== facility)
+        );
+    };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
-            <div className="rounded-lg border border-slate-300 p-5 h-fit sticky top-10">
-                <div className="space-y-5">
-                    <h3 className="text-lg font-semibold border-b border-slate-300 pb-5">Filter by:</h3>
-                    <StarRatingFilter selectedStars={selectedStars} onChange={handleStarsChange}/>
-                    <HotelTypesFilter selectedHotelTypes={selectedHotelTypes} onChange={handleHotelTypeChange}/>
-                    <FacilitiesFilter selectedFacilitiesTypes={selectedFacilities} onChange={handleFacilitiesChange}/>
-                    <PriceFilter selectedprice={selectedPrice} onChange={(value?:number) => setSelectedPrice(value)}/>
+        <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-5 w-full p-4">
+            {/* Sidebar */}
+            <div className="rounded-lg border border-slate-300 p-5 h-fit top-10 max-w-xs mx-auto md:max-w-none">
+                <div className="space-y-3 sm:space-y-5">
+                    <h3 className="text-lg sm:text-xl font-semibold border-b border-slate-300 pb-3 sm:pb-5">Filter by:</h3>
+                    <StarRatingFilter selectedStars={selectedStars} onChange={handleStarsChange} />
+                    <HotelTypesFilter selectedHotelTypes={selectedHotelTypes} onChange={handleHotelTypeChange} />
+                    <FacilitiesFilter selectedFacilitiesTypes={selectedFacilities} onChange={handleFacilitiesChange} />
+                    <PriceFilter selectedprice={selectedPrice} onChange={(value?: number) => setSelectedPrice(value)} />
                 </div>
             </div>
-            <div className="flex flex-col gap-5">
-                <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold">
+
+            {/* Hotel Results */}
+            <div className="flex flex-col gap-5 w-full">
+                <div className="flex flex-wrap justify-between items-center gap-3">
+                    <span className="text-lg sm:text-xl font-bold">
                         {hotelData?.pagination.total} Hotels found
-                        {search.destination? ` in ${search.destination}` : ""}
+                        {search.destination ? ` in ${search.destination}` : ""}
                     </span>
-                    <select value={sortOption} onChange={(event) => setSortOption(event.target.value)} className="p-2 border rounded-md">
+                    <select
+                        value={sortOption}
+                        onChange={(event) => setSortOption(event.target.value)}
+                        className="p-2 border rounded-md w-full sm:w-auto"
+                    >
                         <option value="">Sort By</option>
                         <option value="starRating">Star Rating</option>
                         <option value="pricePerNightAsc">Price Per Night (low to high)</option>
                         <option value="pricePerNightDesc">Price Per Night (high to low)</option>
                     </select>
                 </div>
-                {hotelData?.data.map((hotel)=>(
-                    <SearchResultsCard hotel={hotel} key={hotel._id}/>
+                {hotelData?.data.map((hotel) => (
+                    <SearchResultsCard hotel={hotel} key={hotel._id} />
                 ))}
                 <div>
-                    <Pagination page={hotelData?.pagination.page || 1} pages={hotelData?.pagination.pages || 1} onPageChange={(page)=>setPage(page)}/>
+                    <Pagination
+                        page={hotelData?.pagination.page || 1}
+                        pages={hotelData?.pagination.pages || 1}
+                        onPageChange={(page) => setPage(page)}
+                    />
                 </div>
             </div>
         </div>
     );
-}
-
+};
 
 export default Search;
-
